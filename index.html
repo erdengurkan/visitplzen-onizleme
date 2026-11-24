@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Visit Plzeňský kraj: návrhy redesignu</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Geist:wght@400..700&display=swap">
+<style>
+:root { --bg:#f4f6f5; --surface:#fcfdfc; --ink:#15211c; --muted:#56665f; --line:#d3ddd8; --accent:#1d6a44; color-scheme: light; }
+@media (prefers-color-scheme: dark) { :root { --bg:#0e1512; --surface:#131d19; --ink:#e8efeb; --muted:#93a59c; --line:#26352f; --accent:#5cc98c; color-scheme: dark; } }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.6 'Geist', system-ui, sans-serif; }
+.wrap { max-width:1100px; margin:0 auto; padding:56px 16px 80px; }
+h1 { font:700 clamp(34px,5vw,56px)/1.05 'Bricolage Grotesque', sans-serif; letter-spacing:-.03em; margin:0; }
+p.lead { color:var(--muted); font-size:18px; max-width:60ch; margin:16px 0 40px; }
+.grid { display:grid; gap:20px; }
+@media (min-width:800px) { .grid { grid-template-columns:1fr 1fr; } }
+a.card { display:block; text-decoration:none; color:inherit; background:var(--surface); border:1px solid var(--line); border-radius:20px; overflow:hidden; transition:border-color .2s; }
+a.card:hover { border-color:var(--ink); }
+.card img { width:100%; aspect-ratio:16/10; object-fit:cover; object-position:top; display:block; border-bottom:1px solid var(--line); }
+.card .t { padding:22px; }
+.card b { font:700 24px/1.2 'Bricolage Grotesque', sans-serif; display:block; }
+.card span { color:var(--muted); display:block; margin-top:6px; }
+.card.off { opacity:.6; pointer-events:none; }
+.ph { aspect-ratio:16/10; display:grid; place-items:center; background:var(--line); color:var(--muted); font-weight:600; }
+ul { color:var(--muted); padding-left:18px; margin:40px 0 0; max-width:70ch; }
+small { display:block; margin-top:40px; color:var(--muted); }
+</style>
+</head>
+<body><div class="wrap">
+<h1>Visit Plzeňský kraj<br>návrhy redesignu</h1>
+<p class="lead">Dvě varianty nového vzhledu. V každé je 5 ukázkových stránek z každé kategorie a nová sekce Konference a akce, která přebírá obsah webu konference-plzensky-kraj.cz.</p>
+<div class="grid">
+<a class="card" href="a/"><img src="a/preview.jpg" alt="Náhled varianty A"><div class="t"><b>Varianta A</b><span>Čistý editoriální styl, interaktivní mapa kraje, detail místa na jedné obrazovce: informace vlevo, fotografie vpravo, galerie pod tím.</span></div></a>
+<a class="card off" href="b/" aria-disabled="true"><div class="ph">Připravujeme</div><div class="t"><b>Varianta B</b><span>Blíže současnému webu, se stejným zrychleným detailem místa a sekcí Konference.</span></div></a>
+</div>
+<ul>
+<li>Adresy stránek zůstávají stejné jako na současném webu (kvůli SEO).</li>
+<li>Každá stránka má v horní liště odkaz „Současná verze“ pro rychlé porovnání.</li>
+<li>Formuláře jsou v ukázce jen naznačené a nic neodesílají. Strukturovaná data pro SEO a GEO doplníme v další fázi.</li>
+</ul>
+<small>Návrh: Buinsoft. Fotografie z webů klienta a z Wikimedia Commons (autoři uvedeni u galerií).</small>
+</div></body></html>
