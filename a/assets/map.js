@@ -19,7 +19,7 @@
     return m;
   };
   const region = (m, d) => L.polygon(d.region, { color: accent(), weight: 2, fillOpacity: 0.035, interactive: false }).addTo(m);
-  const icon = (p, kind = '') => L.divIcon({ className: 'mk ' + kind, iconSize: null, html: `<span class="mk-in"><img src="${BASE + p.i}" alt=""><b>${esc(p.t.split(',')[0])}</b></span>` });
+  const icon = (p, kind = '', col = '') => L.divIcon({ className: 'mk ' + kind, iconSize: null, html: `<span class="mk-in"><img src="${BASE + p.i}" alt=""${col ? ` style="border-color:${col}"` : ''}><b>${esc(p.t.split(',')[0])}</b></span>` });
   const vIcon = () => L.divIcon({ className: 'mk-v', iconSize: [30, 30], html: '<i class="ph ph-buildings"></i>' });
   const popup = p => `<a class="pop" href="${BASE + p.u}"><img src="${BASE + p.i}" alt=""><span><small>${esc(p.c)}</small><b>${esc(p.t)}</b><em>${p.d != null ? `${p.d} km, ` : ''}detail <i class="ph ph-arrow-right"></i></em></span></a>`;
   const cluster = () => L.markerClusterGroup({
@@ -40,8 +40,9 @@
       const show = cat => {
         layer.clearLayers();
         const pts = d.tips.filter(p => cat === '*' ? p.top : p.cat === cat);
-        pts.forEach(p => L.marker([p.lat, p.lon], { icon: icon(p), title: p.t, riseOnHover: true }).bindPopup(popup(p), { maxWidth: 260 }).addTo(layer));
+        pts.forEach(p => L.marker([p.lat, p.lon], { icon: icon(p, '', d.cols && d.cols[p.cat]), title: p.t, riseOnHover: true }).bindPopup(popup(p), { maxWidth: 260 }).addTo(layer));
         tabs.forEach(t => t.setAttribute('aria-pressed', t.dataset.mapTab === cat));
+        if (cat !== '*' && d.cols && d.cols[cat]) el.style.setProperty('--mk', d.cols[cat]); else el.style.removeProperty('--mk');
         if (cat === '*') m.fitBounds(L.polygon(d.region).getBounds(), { padding: [10, 10], animate: !reduce });
         else fit(m, pts.map(p => [p.lat, p.lon]), 60, 12);
         if (list) list.innerHTML = pts.slice(0, 6).map(p => `<a class="chip" href="${BASE + p.u}"><i class="ph ph-map-pin"></i>${esc(p.t.split(',')[0])}</a>`).join('')

@@ -164,3 +164,57 @@
     });
   }
 })();
+
+// liveliness: hero slideshow, count-up numbers, area pins on the B map band
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll('[data-slides]').forEach(box => {
+    const sec = box.closest('section');
+    const sl = [...box.querySelectorAll('.sl')];
+    const cap = sec.querySelector('[data-sl-cap]');
+    const dotsEl = sec.querySelector('[data-sl-dots]');
+    const pause = sec.querySelector('[data-sl-pause]');
+    if (sl.length < 2) return;
+    let i = 0, timer = null, paused = reduce;
+    const DUR = 6500;
+    const dots = sl.map((s, k) => { const d = document.createElement('button'); d.type = 'button'; d.setAttribute('aria-label', 'Fotografie ' + (k + 1) + ': ' + s.dataset.cap); d.innerHTML = '<span></span>'; d.addEventListener('click', () => { go(k); restart(); }); dotsEl && dotsEl.append(d); return d; });
+    const go = k => {
+      sl[i].classList.remove('on'); i = (k + sl.length) % sl.length; sl[i].classList.add('on');
+      dots.forEach((d, j) => { d.classList.toggle('on', j === i); });
+      if (cap) { cap.href = sl[i].dataset.href; cap.querySelector('small').textContent = 'Na fotce · ' + sl[i].dataset.cat; cap.querySelector('b').textContent = sl[i].dataset.cap; }
+    };
+    const restart = () => { clearInterval(timer); sec.classList.toggle('sl-paused', paused); if (!paused) timer = setInterval(() => go(i + 1), DUR); };
+    sec.style.setProperty('--sl-dur', DUR + 'ms');
+    if (pause) {
+      const sync = () => { pause.setAttribute('aria-pressed', paused); pause.setAttribute('aria-label', paused ? 'Spustit prezentaci' : 'Pozastavit prezentaci'); pause.innerHTML = paused ? '<i class="ph ph-play"></i>' : '<i class="ph ph-pause"></i>'; };
+      pause.addEventListener('click', () => { paused = !paused; sync(); restart(); }); sync();
+    }
+    document.addEventListener('visibilitychange', () => { if (document.hidden) clearInterval(timer); else restart(); });
+    go(0); restart();
+  });
+
+  // count-up for fact numbers (only when visible, keeps Czech formatting)
+  const counters = [...document.querySelectorAll('[data-count] .fb b, .stats .stat b[data-to]')];
+  if (counters.length && 'IntersectionObserver' in window && !reduce) {
+    const run = el => {
+      const raw = el.textContent; const m = raw.match(/[\d  ]*\d(?:,\d+)?/); if (!m) return;
+      const numStr = m[0]; const dec = (numStr.split(',')[1] || '').length; const target = parseFloat(numStr.replace(/[\s ]/g, '').replace(',', '.'));
+      const pre = raw.slice(0, m.index), post = raw.slice(m.index + numStr.length);
+      const fmt = v => pre + v.toLocaleString('cs', { minimumFractionDigits: dec, maximumFractionDigits: dec }) + post;
+      const t0 = performance.now(), D = 1400;
+      const step = t => { const k = Math.min(1, (t - t0) / D); const e = 1 - Math.pow(1 - k, 3); el.textContent = fmt(target * e); if (k < 1) requestAnimationFrame(step); else el.textContent = raw; };
+      requestAnimationFrame(step);
+    };
+    const io = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) { run(en.target); io.unobserve(en.target); } }), { threshold: 0.6 });
+    counters.forEach(c => io.observe(c));
+  }
+
+  // B: hovering an area pill lights its pin on the region map
+  document.querySelectorAll('.gb-pills a[data-area]').forEach(a => {
+    const pin = document.querySelector(`.gb-map a.pin[href="${a.getAttribute('href')}"]`);
+    if (!pin) return;
+    const on = v => () => pin.classList.toggle('hl', v);
+    a.addEventListener('mouseenter', on(true)); a.addEventListener('mouseleave', on(false));
+    a.addEventListener('focus', on(true)); a.addEventListener('blur', on(false));
+  });
+})();
